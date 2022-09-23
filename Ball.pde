@@ -8,6 +8,9 @@ class Ball {
   
   // the velocity of the ball
   PVector velocity;
+  
+  //
+  PVector acceleration;
 
   // the radius of the ball
   float radius;
@@ -17,11 +20,11 @@ class Ball {
   
   ////////////////////////////////////// CONSTANT
   // air resistance constant
-  final float d = 1.0;
+  final float D = 0.4;
   // restitution coefficient
-  final float cr = 1.0;
+  final float CR = 0.73;
   // friction constant
-  final float c = 1.0;
+  final float C = 0.8;
 
   /**
    * Constructor of the object
@@ -29,9 +32,9 @@ class Ball {
   Ball(float x, float y, float r_) {
     position = new PVector(x, y);
     velocity = PVector.random2D();
-    velocity.mult(4);
+    velocity.mult(10);
     radius = r_;
-    m = radius*.1;
+    m = 1;
   }
 
 
@@ -39,8 +42,16 @@ class Ball {
    * Update the attribute of the ball
    **/
   void update() {
+    System.out.print(velocity.x+" "+velocity.y+"   ");
+    PVector tmp = new PVector(velocity.x * (-D / m), velocity.y * (-D / m) );
+    acceleration = tmp.add(GRAVITY); 
+    
+    velocity.add(acceleration);
+    
+    
+    
+    System.out.println(velocity.x+" "+velocity.y+"   ");
     position.add(velocity);
-    velocity.mult(0.995);
   }
 
 
@@ -49,16 +60,21 @@ class Ball {
     if (position.x > width-radius) {
       position.x = width-radius;
       velocity.x *= -1;
-    } else if (position.x < radius) {
+    }
+    if (position.x < radius) {
       position.x = radius;
       velocity.x *= -1;
-    } else if (position.y > height-radius) {
+    }
+    if (position.y > height-radius) {
       position.y = height-radius;
       velocity.y *= -1;
-    } else if (position.y < radius) {
+    } 
+    if (position.y < radius) {
       position.y = radius;
       velocity.y *= -1;
     }
+    
+    //velocity.add(velocity.mult((1-CR)));
   }
 
  
