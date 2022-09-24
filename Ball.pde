@@ -18,7 +18,7 @@ class Ball {
   float radius;
   
   // the mass of the ball
-  float m = 1;
+  float m = 0.63;
   
   ////////////////////////////////////// CONSTANT
   // air resistance constant
@@ -28,59 +28,91 @@ class Ball {
   // friction constant
   float CF = 0.8;
 
+
   /**
    * Constructor of the object
    **/
   Ball(float x, float y, float r_) {
     position = new PVector(x, y);
-    velocity0 = PVector.random2D();
-    velocity0.mult(10);
+    velocity0 = new PVector(random(-20,20),random(-2,-3));
+    //velocity0 = new PVector(0, 0);
+    //velocity0.mult(10);
     radius = r_;
-    velocity = velocity0;
+    velocity = new PVector(velocity0.x, velocity0.y);
   }
 
   /**
    * Update the attribute of the ball
   **/ 
   void update() {
+    /*PVector tmp = new PVector(velocity.x * (-D / m), velocity.y * (-D / m) );
+    acceleration = tmp.add(GRAVITY); 
+    
+    tmp = new PVector(velocity0.x, velocity0.y);
+    velocity = tmp.add(acceleration);*/
+    
+    //System.out.print(velocity.x+" "+velocity.y+"         ");
+    
     PVector tmp = new PVector(velocity.x * (-D / m), velocity.y * (-D / m) );
     acceleration = tmp.add(GRAVITY); 
     
-    velocity = velocity0.add(acceleration);
+    tmp = new PVector(velocity0.x, velocity0.y);
+    velocity = tmp.add(acceleration.mult(t));
     
+    //System.out.println(velocity.x+" "+velocity.y);
     position.add(velocity);
   }
 
 
   
   void checkBoundaryCollision() {
+    // RIGHT
     if (position.x > width-radius) {
       position.x = width-radius;
-      //velocity.x *= -1;
+      velocity.x *= -1;
+      
       // modification of transversale velocity (friction)
-      velocity.y *= (1-CF)*10;
+      //velocity.y *= (1-CF)*10;
       // modification of normale velocity (bouncy)
-      velocity.x *= -CR*10;
+      //velocity.x *= -CR*10;
+      
+      velocity0.x *= -1;
     }
+    // LEFT
     if (position.x < radius) {
       position.x = radius;
-      //velocity.x *= -1;
-      velocity.y *= (1-CF);
-      velocity.x *= -CR*10;
+      velocity.x *= -1;
+      
+      //velocity.y *= (1-CF);
+      //velocity.x *= -CR*10;
+      
+      velocity0.x *= -1;
     }
+    // BOTTOM
     if (position.y > height-radius) {
       position.y = height-radius;
-      //velocity.y *= -1;
-      velocity.x *= (1-CF);
-      velocity.y *= -CR*10;
-    } 
+      velocity.y *= -1;
+      velocity0 = velocity;
+      t = 0.1;
+      
+      //velocity.x *= (1-CF);
+      //velocity.y *= -CR*10;
+      
+      //velocity0.y *= -1;
+      //System.out.println("HITTTTTT");
+    }
+    
     // top
-    //if (position.y < radius) {
-    //  position.y = radius;
-    //  //velocity.y *= -1;
-    //  velocity.x *= (1-CF);
-    //  velocity.y *= -CR;
-    //}
+    if (position.y < radius) {
+      position.y = radius;
+      velocity.y *= -1;
+      velocity0 = velocity;
+      t = 0.1;
+      
+      //velocity.x *= (1-CF);
+      //velocity.y *= -CR;
+    }
+    
     
     //velocity.add(velocity.mult((1-CF)));
   }
