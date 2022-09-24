@@ -6,7 +6,9 @@ class Ball {
   // the position of the ball in the world
   PVector position;
   
-  // the velocity of the ball
+  // the initial velocity of the ball
+  PVector velocity0;
+  
   PVector velocity;
   
   //
@@ -16,41 +18,36 @@ class Ball {
   float radius;
   
   // the mass of the ball
-  float m;
+  float m = 1;
   
   ////////////////////////////////////// CONSTANT
   // air resistance constant
   final float D = 0.4;
   // restitution coefficient
-  final float CR = 0.73;
+  float CR = 0.73;
   // friction constant
-  final float C = 0.8;
+  float CF = 0.8;
 
   /**
    * Constructor of the object
    **/
   Ball(float x, float y, float r_) {
     position = new PVector(x, y);
-    velocity = PVector.random2D();
-    velocity.mult(10);
+    velocity0 = PVector.random2D();
+    velocity0.mult(10);
     radius = r_;
-    m = 1;
+    velocity = velocity0;
   }
-
 
   /**
    * Update the attribute of the ball
-   **/
+  **/ 
   void update() {
-    System.out.print(velocity.x+" "+velocity.y+"   ");
     PVector tmp = new PVector(velocity.x * (-D / m), velocity.y * (-D / m) );
     acceleration = tmp.add(GRAVITY); 
     
-    velocity.add(acceleration);
+    velocity = velocity0.add(acceleration);
     
-    
-    
-    System.out.println(velocity.x+" "+velocity.y+"   ");
     position.add(velocity);
   }
 
@@ -59,22 +56,33 @@ class Ball {
   void checkBoundaryCollision() {
     if (position.x > width-radius) {
       position.x = width-radius;
-      velocity.x *= -1;
+      //velocity.x *= -1;
+      // modification of transversale velocity (friction)
+      velocity.y *= (1-CF)*10;
+      // modification of normale velocity (bouncy)
+      velocity.x *= -CR*10;
     }
     if (position.x < radius) {
       position.x = radius;
-      velocity.x *= -1;
+      //velocity.x *= -1;
+      velocity.y *= (1-CF);
+      velocity.x *= -CR*10;
     }
     if (position.y > height-radius) {
       position.y = height-radius;
-      velocity.y *= -1;
+      //velocity.y *= -1;
+      velocity.x *= (1-CF);
+      velocity.y *= -CR*10;
     } 
-    if (position.y < radius) {
-      position.y = radius;
-      velocity.y *= -1;
-    }
+    // top
+    //if (position.y < radius) {
+    //  position.y = radius;
+    //  //velocity.y *= -1;
+    //  velocity.x *= (1-CF);
+    //  velocity.y *= -CR;
+    //}
     
-    //velocity.add(velocity.mult((1-CR)));
+    //velocity.add(velocity.mult((1-CF)));
   }
 
  

@@ -15,7 +15,7 @@ int[] size_limits = {30,40};
 // the limits where balls appears in the windows (0 is the top of the windows)
 int[] spawn_limits = {0,80};
 //
-final PVector GRAVITY = new PVector(0,9.8);
+final PVector GRAVITY = new PVector(0,3);
 
 
 // Element used for scrollbar
