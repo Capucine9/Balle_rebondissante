@@ -18,27 +18,29 @@ class Ball {
   float radius;
   
   // the mass of the ball
-  float m = 0.63;
+  float m;
   
   ////////////////////////////////////// CONSTANT
   // air resistance constant
   final float D = 0.4;
   // restitution coefficient
-  float CR = 0.73;
-  // friction constant
-  float CF = 0.8;
+  float CR = 0.74;
+  // friction coefficient
+  float CF = 0.6;
 
 
   /**
    * Constructor of the object
    **/
-  Ball(float x, float y, float r_) {
+  Ball(float x, float y, float diametre, float masse, float cr) {
     position = new PVector(x, y);
     velocity0 = new PVector(random(-20,20),random(-2,-3));
     //velocity0 = new PVector(0, 0);
     //velocity0.mult(10);
-    radius = r_;
+    radius = diametre / 2;
     velocity = new PVector(velocity0.x, velocity0.y);
+    m = masse;
+    CR =cr;
   }
 
   /**
@@ -69,52 +71,44 @@ class Ball {
     // RIGHT
     if (position.x > width-radius) {
       position.x = width-radius;
-      velocity.x *= -1;
-      
+      //velocity.x *= -1;
       // modification of transversale velocity (friction)
-      //velocity.y *= (1-CF)*10;
+      velocity.y *= (1-CF);
       // modification of normale velocity (bouncy)
-      //velocity.x *= -CR*10;
-      
+      velocity.x *= -CR;
       velocity0.x *= -1;
     }
+    
     // LEFT
     if (position.x < radius) {
       position.x = radius;
-      velocity.x *= -1;
-      
-      //velocity.y *= (1-CF);
-      //velocity.x *= -CR*10;
-      
+      //velocity.x *= -1;
+      velocity.y *= (1-CF);
+      velocity.x *= -CR;
       velocity0.x *= -1;
     }
+    
     // BOTTOM
     if (position.y > height-radius) {
       position.y = height-radius;
-      velocity.y *= -1;
+      //velocity.y *= -1;
+      velocity.x *= (1-CF);
+      velocity.y *= -CR;
       velocity0 = velocity;
+      
       t = 0.1;
-      
-      //velocity.x *= (1-CF);
-      //velocity.y *= -CR*10;
-      
-      //velocity0.y *= -1;
-      //System.out.println("HITTTTTT");
     }
     
-    // top
+    // TOP
     if (position.y < radius) {
       position.y = radius;
-      velocity.y *= -1;
+      //velocity.y *= -1;
+      velocity.x *= (1-CF);
+      velocity.y *= -CR;
       velocity0 = velocity;
-      t = 0.1;
       
-      //velocity.x *= (1-CF);
-      //velocity.y *= -CR;
+      t = 0.1;
     }
-    
-    
-    //velocity.add(velocity.mult((1-CF)));
   }
 
  
