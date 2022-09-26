@@ -3,15 +3,17 @@
  **/
 class Ball {
   
+  
   // the position of the ball in the world
   PVector position;
   
   // the initial velocity of the ball
   PVector velocity0;
   
+  // the velocity of the ball at the time t;
   PVector velocity;
   
-  //
+  // the acceleration of the ball at the time t;
   PVector acceleration;
 
   // the radius of the ball
@@ -24,89 +26,83 @@ class Ball {
   // air resistance constant
   final float D = 0.4;
   // restitution coefficient
-  float CR = 0.74;
+  float cr_coef = 0.74;
   // friction coefficient
-  float CF = 0.6;
+  final float CF = 0.6;
 
 
   /**
    * Constructor of the object
    **/
-  Ball(float x, float y, float diametre, float masse, float cr) {
+  Ball(float x, float y, float diametre, float masse, float cr_) {
     position = new PVector(x, y);
-    velocity0 = new PVector(random(-20,20),random(-2,-3));
-    //velocity0 = new PVector(0, 0);
-    //velocity0.mult(10);
+    // init an random initial velocity
+    velocity0 = new PVector(random(-20,20),random(-3,-4));
     radius = diametre / 2;
     velocity = new PVector(velocity0.x, velocity0.y);
     m = masse;
-    CR =cr;
+    cr_coef =cr_;
   }
 
+
   /**
-   * Update the attribute of the ball
+   * Update the attribute of the ball, its position thanks to the calculation of the velocity and acceleration at time t.
   **/ 
   void update() {
-    /*PVector tmp = new PVector(velocity.x * (-D / m), velocity.y * (-D / m) );
-    acceleration = tmp.add(GRAVITY); 
-    
-    tmp = new PVector(velocity0.x, velocity0.y);
-    velocity = tmp.add(acceleration);*/
-    
-    //System.out.print(velocity.x+" "+velocity.y+"         ");
-    
+    // calculate the acceleration at the time t
     PVector tmp = new PVector(velocity.x * (-D / m), velocity.y * (-D / m) );
     acceleration = tmp.add(GRAVITY); 
     
+    // calculate the velocity at the time t
     tmp = new PVector(velocity0.x, velocity0.y);
     velocity = tmp.add(acceleration.mult(t));
     
-    //System.out.println(velocity.x+" "+velocity.y);
     position.add(velocity);
   }
 
 
   
+  /**
+   * Check if the ball hurt a wall or not, and recalculate its velocity
+   **/
   void checkBoundaryCollision() {
     // RIGHT
     if (position.x > width-radius) {
       position.x = width-radius;
-      //velocity.x *= -1;
       // modification of transversale velocity (friction)
       velocity.y *= (1-CF);
       // modification of normale velocity (bouncy)
-      velocity.x *= -CR;
+      velocity.x *= -cr_coef;
       velocity0.x *= -1;
     }
     
     // LEFT
     if (position.x < radius) {
       position.x = radius;
-      //velocity.x *= -1;
       velocity.y *= (1-CF);
-      velocity.x *= -CR;
+      velocity.x *= -cr_coef;
       velocity0.x *= -1;
     }
     
     // BOTTOM
     if (position.y > height-radius) {
       position.y = height-radius;
-      //velocity.y *= -1;
       velocity.x *= (1-CF);
-      velocity.y *= -CR;
+      velocity.y *= -cr_coef;
       velocity0 = velocity;
       
+      // new trajectoty so initialize time
       t = 0.1;
     }
     
     // TOP
     if (position.y < radius) {
       position.y = radius;
-      //velocity.y *= -1;
       velocity.x *= (1-CF);
-      velocity.y *= -CR;
+      velocity.y *= -cr_coef;
       velocity0 = velocity;
       
+      // new trajectoty so initialize time
       t = 0.1;
     }
   }

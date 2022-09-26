@@ -16,31 +16,35 @@ int dimX = 1000;
 // height of the windows  -> 800cm -> 8m
 int dimY = 800;
  
+ 
 // the ball of the project
 Ball ball;
-// differents size for balls 
+// differents size for balls in cm (order : baseball, tennis, baskeball)
 float[] size = {7.4, 7, 24.19};
-// selected ball
+// size of the selected ball
 float taille = size[1];
 
-// differents mass for balls 
+// differents mass for balls in g (same order that above)
 float[] tabmasse = {1.455, 0.63, 6};
-// selected ball
+// mas of the selected ball
 float masse = tabmasse[1];
 
-// differents restitution coefficient for balls 
+
+// differents restitution coefficient for balls (same order that above)
 float[] tabcr = {0.5, 0.74, 0.85};
-// selected ball
+// coef of the selected ball
 float cr = tabcr[1];
+
 
 // the limits where balls appears in the windows (0 is the top of the windows)
 int[] spawn_limits = {0,80};
 
-// tick elapse
+// tick/time elapse
 float t = 0.0;
 
-// m/s
+// gravity force in m/s
 final PVector GRAVITY = new PVector(0,9.8);
+
 
 
 void settings () {
@@ -52,6 +56,8 @@ void settings () {
 void setup() {
   this.newBall();
 }
+
+
 
 /**
  * Method call at each frame of the windows
@@ -87,6 +93,8 @@ void draw() {
   fill(255, 0, 0);
   text("> ", 820, marqueur);
   
+  
+  
   // change selected ball
   if (mouseX >= 835 && mouseX <= 935){
     // baseball
@@ -106,17 +114,23 @@ void draw() {
     }
   }
   
+  
   // update position of the ball and display it
   ball.update();
   ball.display();
   ball.checkBoundaryCollision();
   
+  
+  
   // update the tick count
   t += 0.01;
-  //delay(50);
 }
 
 
+
+/**
+ * Create a new ball and init its trajectory
+ **/
 void newBall() {
   
   // init the ball with size and random position, according to the selected limits
@@ -125,10 +139,16 @@ void newBall() {
 }
 
 
+
+/**
+ * Method executed when the user click on a mouse button
+ **/
 void mousePressed() {
+  // if the left button of the mouse is pressed
   if ( mouseButton == LEFT ) {
     // change selected ball
     if (mouseX >= 835 && mouseX <= 935){
+      // Baseball
       if (mouseY >= 30 && mouseY <= 50){
         marqueur = 52;
         ball.radius = size[0]/2;
@@ -136,6 +156,7 @@ void mousePressed() {
         masse = tabmasse[0];
         cr = tabcr[0];
       }
+      // Tennis
       if (mouseY >= 50 && mouseY <= 70){
         marqueur = 72;
         ball.radius = size[1]/2;
@@ -143,6 +164,7 @@ void mousePressed() {
         masse = tabmasse[1];
         cr = tabcr[1];
       }
+      // Basketball
       if (mouseY >= 70 && mouseY <= 90){
         marqueur = 92;
         ball.radius = size[2]/2;
@@ -152,20 +174,9 @@ void mousePressed() {
       }
     }
 
+  // if the right button of the mouse is pressed
   }else if ( mouseButton == RIGHT ) {
-    System.out.print("R ");
-    /*
-    float y =  mouseY - this.ball.position.y > 50.0 ?  mouseY - this.ball.position.y : 50.0;
-    PVector diff = new PVector(mouseX - this.ball.position.x, y);
-    this.ball.velocity0 = diff.mult(0.05);
-    this.ball.velocity = new PVector(this.ball.velocity0.x, this.ball.velocity0.y);
-    */
-  }
-  else if ( mouseButton == CENTER ) {
-    System.out.print("C ");
     this.newBall();
     this.ball.position = new PVector(mouseX, mouseY);
   }
-  
-  System.out.println(mouseX+" "+mouseY+"\n");
 }
